@@ -1,0 +1,15 @@
+{
+  "name": "sigayantara-api",
+  "version": "1.0.0",
+  "description": "REST API for SiGayantara App",
+  "main": "index.js",
+  "scripts": {
+    "save": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.16"
+  }
+}
