@@ -4,7 +4,7 @@
   "description": "REST API for SiGayantara App",
   "main": "index.js",
   "scripts": {
-    "save": "nodemon index.js"
+    "start": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
