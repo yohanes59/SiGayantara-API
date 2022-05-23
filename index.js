@@ -29,7 +29,7 @@ const fileFilter = (req, file, cb) => {
 }
 
 app.use(express.json());
-app.use('v1/images', express.static(path.resolve(__dirname, 'images')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 
 app.use((req, res, next) => {

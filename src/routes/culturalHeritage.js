@@ -14,4 +14,6 @@ const culturalHeritageValidation = [
 // http://localhost:4000/v1/culturalheritage => post data cagar
 router.post('/culturalheritage', culturalHeritageValidation, culturalHeritageController.createCulturalHeritage);
 
+router.get('/culturalheritages', culturalHeritageController.getAllCulturalHeritage);
+
 module.exports = router;

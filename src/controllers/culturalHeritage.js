@@ -49,3 +49,16 @@ exports.createCulturalHeritage = (req, res, next) => {
         })
         .catch((err) => console.log(err));
 }
+
+exports.getAllCulturalHeritage = (req, res, next) => {
+    Cultureheritage.find()
+        .then((result) => {
+            res.status(200).json({
+                message: 'Berhasil mendapatkan semua data cagar budaya.',
+                data: result,
+            });
+        })
+        .catch((err) => {
+            next(err);
+        });
+}
