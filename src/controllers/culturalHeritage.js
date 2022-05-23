@@ -1,12 +1,11 @@
 // referensi data di ambil dari http://cagarbudaya.kemdikbud.go.id/
-const {validationResult} = require('express-validator');
+const { validationResult } = require('express-validator');
+const Cultureheritage = require('../models/culturalHeritage');
 
-exports.createCulturalHeritage = (req, res, next) => {
-    const body = req.body;
-
+const inputValidator = (req) => {
     const errors = validationResult(req);
 
-    if(!errors.isEmpty()) {
+    if (!errors.isEmpty()) {
         const err = new Error('Invalid Value');
         err.status = 400;
         err.data = errors.array();
@@ -14,49 +13,39 @@ exports.createCulturalHeritage = (req, res, next) => {
         throw err;
     }
 
-    const result = {
-        message: "Cultural Heritage created successfully",
-        data: {
-            cagar_id: 1,
-            nama: "Museum Bahari",
-            jenis: "bangunan",
-            keberadaan: {
-                provinsi: "Dki Jakarta",
-                kabupaten: "Kota Adm. Jakarta Utara",
-            },
-            sejarah: "Kompleks Bangunan Museum Bahari didirikan tahun 1652, tetapi diubah beberapa kali sampai tahun 1759. Angka tahun perbaikan, perluasan atau penambahan gudang dapat dilihat di atas beberapa pintu museum, misalnya tahun 1718, 1719, atau tahun 1771. Westzidjsche Pakhuizen atau Gudang Tepi Barat menyimpan persediaan pala, lada, dan kopi. Di antara gudang dan Tembok Kota, VOC menyimpan persediaan tembaga dan timah. Logam berharga tersebut diamankan terhadap hujan oleh suatu serambi gantung. Serambi gantung ini dimanfaatkan juga untuk patroli. Serambi ini dipasang pada lantai kedua gudang yang menghadap pelabuhan tetapi sudah lama dibongkar (Heuken, 2000:36-37).",
-            description: "Kompleks Bangunan Museum Bahari yang dahulu disebut Westzijdsche Pakhuizen, dirancang oleh Ir. Jacques Bollan dan didirikan dalam beberapa tahap mulai tahun 1652.",
-            createdAt: new Date().toISOString(),
-            author: {
-                user_id: 1,
-                nama: "Yohanes",
-            }
-        }
+    if (!req.file) {
+        const err = new Error('Image is required');
+        err.status = 422;
+        throw err;
     }
-    res.status(201).json(result);
 }
 
-exports.getAllCulturalHeritage = (req, res, next) => {
-    res.json(
-        {
-            message: "Get Cultural Heritage success",
-            data: {
-                cagar_id: 1,
-                nama: "Museum Bahari",
-                jenis: "bangunan",
-                keberadaan: {
-                    provinsi: "Dki Jakarta",
-                    kabupaten: "Kota Adm. Jakarta Utara",
-                },
-                sejarah: "Kompleks Bangunan Museum Bahari didirikan tahun 1652, tetapi diubah beberapa kali sampai tahun 1759. Angka tahun perbaikan, perluasan atau penambahan gudang dapat dilihat di atas beberapa pintu museum, misalnya tahun 1718, 1719, atau tahun 1771. Westzidjsche Pakhuizen atau Gudang Tepi Barat menyimpan persediaan pala, lada, dan kopi. Di antara gudang dan Tembok Kota, VOC menyimpan persediaan tembaga dan timah. Logam berharga tersebut diamankan terhadap hujan oleh suatu serambi gantung. Serambi gantung ini dimanfaatkan juga untuk patroli. Serambi ini dipasang pada lantai kedua gudang yang menghadap pelabuhan tetapi sudah lama dibongkar (Heuken, 2000:36-37).",
-                description: "Kompleks Bangunan Museum Bahari yang dahulu disebut Westzijdsche Pakhuizen, dirancang oleh Ir. Jacques Bollan dan didirikan dalam beberapa tahap mulai tahun 1652.",
-                createdAt: new Date().toISOString(),
-                author: {
-                    user_id: 1,
-                    nama: "Yohanes",
-                }
-            }
-        }
-    )
-    next();
+exports.createCulturalHeritage = (req, res, next) => {
+    inputValidator(req);
+
+    const body = req.body;
+    const image = req.file.path;
+
+    const cultureheritage = new Cultureheritage({
+        nama: body.nama,
+        image: image,
+        jenis: body.jenis,
+        provinsi: body.provinsi,
+        kabupaten: body.kabupaten,
+        sejarah: body.sejarah,
+        description: body.description,
+        author: {
+            user_id: 1,
+            nama: "Yohanes",
+        },
+    });
+
+    cultureheritage.save()
+        .then((result) => {
+            res.status(201).json({
+                message: "Data cagar budaya berhasil ditambahkan",
+                data: result,
+            });
+        })
+        .catch((err) => console.log(err));
 }

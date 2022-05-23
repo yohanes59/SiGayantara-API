@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose.Schema;
+const { Schema } = mongoose;
 
-const culturalHeritagePost = new Schema({
+const CulturalheritagePost = new Schema({
     nama: {
+        type: String,
+        required: true,
+    },
+    image: {
         type: String,
         required: true,
     },
@@ -10,8 +14,12 @@ const culturalHeritagePost = new Schema({
         type: String,
         required: true,
     },
-    keberadaan: {
-        type: Object,
+    provinsi: {
+        type: String,
+        required: true,
+    },
+    kabupaten: {
+        type: String,
         required: true,
     },
     sejarah: {
@@ -26,4 +34,4 @@ const culturalHeritagePost = new Schema({
     timestamps: true,
 });
 
-module.exports = mongoose.model('CulturalHeritage', culturalHeritagePost)
+module.exports = mongoose.model('Cultureheritage', CulturalheritagePost)
