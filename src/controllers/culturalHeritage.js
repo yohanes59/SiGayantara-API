@@ -81,3 +81,38 @@ exports.getCulturalHeritageById = (req, res, next) => {
         next(err);
     });
 }
+
+exports.updateCulturalHeritage = (req, res, next) => {
+    inputValidator(req);
+
+    const body = req.body;
+    const image = req.file.path;
+    const CultureheritageId = req.params.culturalheritageId;
+
+    Cultureheritage.findById(CultureheritageId)
+    .then(cultureheritage => {
+        if(!cultureheritage) {
+            const error = new Error('Data cagar budaya tidak ditemukan');
+            error.statusCode = 404;
+            throw error;
+        }
+        cultureheritage.nama = body.nama;
+        cultureheritage.image = image;
+        cultureheritage.jenis = body.jenis;
+        cultureheritage.provinsi = body.provinsi;
+        cultureheritage.kabupaten = body.kabupaten;
+        cultureheritage.sejarah = body.sejarah;
+        cultureheritage.description = body.description;
+
+        return cultureheritage.save();
+    })
+    .then(result => {
+        res.status(200).json({
+            message: "Data cagar budaya berhasil diupdate",
+            data: result
+        });
+    })
+    .catch(err => {
+        next(err);
+    })
+}
