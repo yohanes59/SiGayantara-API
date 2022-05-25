@@ -53,16 +53,30 @@ exports.createCulturalHeritage = (req, res, next) => {
 }
 
 exports.getAllCulturalHeritage = (req, res, next) => {
+    const currentPage = +req.query.page || 1;
+    const perPage = +req.query.perPage || 6;
+    let totalItems;
+    
     Cultureheritage.find()
-        .then((result) => {
-            res.status(200).json({
-                message: 'Berhasil mendapatkan semua data cagar budaya.',
-                data: result,
-            });
-        })
-        .catch((err) => {
-            next(err);
+    .countDocuments()
+    .then(count => {
+        totalItems = count;
+        return Cultureheritage.find()
+        .skip((currentPage - 1) * perPage)
+        .limit(perPage);
+    })
+    .then(result => {
+        res.status(200).json({
+            message: 'Berhasil mendapatkan semua data cagar budaya.',
+            data: result,
+            total_data: totalItems,
+            per_page: perPage,
+            current_page: currentPage,
         });
+    })
+    .catch(err => {
+        next(err);
+    })
 }
 
 exports.getCulturalHeritageById = (req, res, next) => {
