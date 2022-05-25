@@ -62,3 +62,22 @@ exports.getAllCulturalHeritage = (req, res, next) => {
             next(err);
         });
 }
+
+exports.getCulturalHeritageById = (req, res, next) => {
+    const CultureheritageId = req.params.culturalheritageId;
+    Cultureheritage.findById(CultureheritageId)
+    .then(result => {
+        if(!result) {
+            const error = new Error('Data cagar budaya tidak ditemukan');
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({
+            message: "Data cagar budaya Success dipanggil",
+            data: result
+        })
+    })
+    .catch(err => {
+        next(err);
+    });
+}
