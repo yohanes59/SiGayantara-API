@@ -1,5 +1,7 @@
 // referensi data di ambil dari http://cagarbudaya.kemdikbud.go.id/
 const { validationResult } = require('express-validator');
+const path = require('path');
+const fs = require('fs');
 const Cultureheritage = require('../models/culturalHeritage');
 
 const inputValidator = (req) => {
@@ -96,6 +98,8 @@ exports.updateCulturalHeritage = (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
+        removeImage(cultureheritage.image);
+
         cultureheritage.nama = body.nama;
         cultureheritage.image = image;
         cultureheritage.jenis = body.jenis;
@@ -115,4 +119,15 @@ exports.updateCulturalHeritage = (req, res, next) => {
     .catch(err => {
         next(err);
     })
+}
+
+const removeImage = (filePath) => {
+    console.log('filePath: ', filePath);
+    console.log('dir name: ', __dirname);
+
+    filePath = path.join(__dirname, '../..', filePath);
+    // console.log(filePath);
+    fs.unlink(filePath, err => {
+        console.log(err);
+    });
 }
