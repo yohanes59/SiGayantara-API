@@ -121,12 +121,35 @@ exports.updateCulturalHeritage = (req, res, next) => {
     })
 }
 
+exports.deleteCulturalHeritage = (req, res, next) => {
+    const CultureheritageId = req.params.culturalheritageId;
+
+    Cultureheritage.findById(CultureheritageId)
+    .then(cultureheritage => {
+        if(!cultureheritage) {
+            const error = new Error('Data cagar budaya tidak ditemukan');
+            error.statusCode = 404;
+            throw error;
+        }
+        removeImage(cultureheritage.image);
+        return Cultureheritage.findByIdAndRemove(CultureheritageId);
+    })
+    .then(result => {
+        res.status(200).json({
+            message: "Hapus data cagar budaya berhasil",
+            data: result
+        });
+    })
+    .catch(err => {
+        next(err);
+    })
+}
+
 const removeImage = (filePath) => {
     console.log('filePath: ', filePath);
     console.log('dir name: ', __dirname);
 
     filePath = path.join(__dirname, '../..', filePath);
-    // console.log(filePath);
     fs.unlink(filePath, err => {
         console.log(err);
     });

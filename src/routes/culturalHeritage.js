@@ -17,6 +17,8 @@ router.post('/culturalheritage', culturalHeritageValidation, culturalHeritageCon
 router.get('/culturalheritages', culturalHeritageController.getAllCulturalHeritage);
 // http://localhost:4000/v1/culturalheritage/<id> => get by id data cagar
 router.get('/culturalheritage/:culturalheritageId', culturalHeritageController.getCulturalHeritageById);
-
+// http://localhost:4000/v1/culturalheritage/<id> => update data cagar
 router.put('/culturalheritage/:culturalheritageId', culturalHeritageValidation, culturalHeritageController.updateCulturalHeritage);
+
+router.delete('/culturalheritage/:culturalheritageId', culturalHeritageController.deleteCulturalHeritage);
 module.exports = router;
