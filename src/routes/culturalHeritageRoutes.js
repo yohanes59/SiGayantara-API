@@ -1,5 +1,5 @@
 const express = require('express');
-const culturalHeritageController = require('../controllers/culturalHeritage');
+const culturalHeritageController = require('../controllers/culturalHeritageController');
 const { body } = require('express-validator');
 
 const router = express.Router();

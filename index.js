@@ -1,9 +1,11 @@
 const express = require('express');
-const culturalHeritageRoutes = require('./src/routes/culturalHeritage');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
+
+const culturalHeritageRoutes = require('./src/routes/culturalHeritageRoutes');
+const authRoutes = require('./src/routes/authRoutes');
 
 const port = 4000;
 const app = express();
@@ -42,6 +44,7 @@ app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image')
 app.use(cors());
 
 app.use('/v1', culturalHeritageRoutes);
+app.use('/v1', authRoutes);
 
 app.use((error, req, res, next) => {
     res.status(error.status).json({
@@ -53,6 +56,7 @@ app.use((error, req, res, next) => {
 mongoose.connect('mongodb+srv://yohanes:sigayantara@cultureheritage.3mmry.mongodb.net/cultureHeritageDb?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useCreateIndex: true,
 })
 .then(() => {
     app.listen(port, () => console.log('Connection Success'));
