@@ -56,46 +56,46 @@ exports.getAllCulturalHeritage = (req, res, next) => {
     const currentPage = +req.query.page || 1;
     const perPage = +req.query.perPage || 6;
     let totalItems;
-    
+
     Cultureheritage.find()
-    .countDocuments()
-    .then(count => {
-        totalItems = count;
-        return Cultureheritage.find()
-        .skip((currentPage - 1) * perPage)
-        .limit(perPage);
-    })
-    .then(result => {
-        res.status(200).json({
-            message: 'Berhasil mendapatkan semua data cagar budaya.',
-            data: result,
-            total_data: totalItems,
-            per_page: perPage,
-            current_page: currentPage,
-        });
-    })
-    .catch(err => {
-        next(err);
-    })
+        .countDocuments()
+        .then(count => {
+            totalItems = count;
+            return Cultureheritage.find()
+                .skip((currentPage - 1) * perPage)
+                .limit(perPage);
+        })
+        .then(result => {
+            res.status(200).json({
+                message: 'Berhasil mendapatkan semua data cagar budaya.',
+                data: result,
+                total_data: totalItems,
+                per_page: perPage,
+                current_page: currentPage,
+            });
+        })
+        .catch(err => {
+            next(err);
+        })
 }
 
 exports.getCulturalHeritageById = (req, res, next) => {
     const CultureheritageId = req.params.culturalheritageId;
     Cultureheritage.findById(CultureheritageId)
-    .then(result => {
-        if(!result) {
-            const error = new Error('Data cagar budaya tidak ditemukan');
-            error.statusCode = 404;
-            throw error;
-        }
-        res.status(200).json({
-            message: "Data cagar budaya Success dipanggil",
-            data: result
+        .then(result => {
+            if (!result) {
+                const error = new Error('Data cagar budaya tidak ditemukan');
+                error.statusCode = 404;
+                throw error;
+            }
+            res.status(200).json({
+                message: "Data cagar budaya Success dipanggil",
+                data: result
+            })
         })
-    })
-    .catch(err => {
-        next(err);
-    });
+        .catch(err => {
+            next(err);
+        });
 }
 
 exports.updateCulturalHeritage = (req, res, next) => {
@@ -106,53 +106,89 @@ exports.updateCulturalHeritage = (req, res, next) => {
     const CultureheritageId = req.params.culturalheritageId;
 
     Cultureheritage.findById(CultureheritageId)
-    .then(cultureheritage => {
-        if(!cultureheritage) {
-            const error = new Error('Data cagar budaya tidak ditemukan');
-            error.statusCode = 404;
-            throw error;
-        }
-        removeImage(cultureheritage.image);
+        .then(cultureheritage => {
+            if (!cultureheritage) {
+                const error = new Error('Data cagar budaya tidak ditemukan');
+                error.statusCode = 404;
+                throw error;
+            }
+            removeImage(cultureheritage.image);
 
-        cultureheritage.nama = body.nama;
-        cultureheritage.image = image;
-        cultureheritage.jenis = body.jenis;
-        cultureheritage.provinsi = body.provinsi;
-        cultureheritage.kabupaten = body.kabupaten;
-        cultureheritage.sejarah = body.sejarah;
-        cultureheritage.description = body.description;
+            cultureheritage.nama = body.nama;
+            cultureheritage.image = image;
+            cultureheritage.jenis = body.jenis;
+            cultureheritage.provinsi = body.provinsi;
+            cultureheritage.kabupaten = body.kabupaten;
+            cultureheritage.sejarah = body.sejarah;
+            cultureheritage.description = body.description;
 
-        return cultureheritage.save();
-    })
-    .then(result => {
-        res.status(200).json({
-            message: "Data cagar budaya berhasil diupdate",
-            data: result
-        });
-    })
-    .catch(err => {
-        next(err);
-    })
+            return cultureheritage.save();
+        })
+        .then(result => {
+            res.status(200).json({
+                message: "Data cagar budaya berhasil diupdate",
+                data: result
+            });
+        })
+        .catch(err => {
+            next(err);
+        })
 }
 
 exports.deleteCulturalHeritage = (req, res, next) => {
     const CultureheritageId = req.params.culturalheritageId;
 
     Cultureheritage.findById(CultureheritageId)
-    .then(cultureheritage => {
-        if(!cultureheritage) {
-            const error = new Error('Data cagar budaya tidak ditemukan');
+        .then(cultureheritage => {
+            if (!cultureheritage) {
+                const error = new Error('Data cagar budaya tidak ditemukan');
+                error.statusCode = 404;
+                throw error;
+            }
+            removeImage(cultureheritage.image);
+            return Cultureheritage.findByIdAndRemove(CultureheritageId);
+        })
+        .then(result => {
+            res.status(200).json({
+                message: "Hapus data cagar budaya berhasil",
+                data: result
+            });
+        })
+        .catch(err => {
+            next(err);
+        })
+}
+
+exports.getListOfJenisOfCulturalHeritage = (req, res, next) => {
+    Cultureheritage.distinct('jenis')
+    .then(result => {
+        if (!result) {
+            const error = new Error('List data jenis cagar budaya tidak ditemukan');
             error.statusCode = 404;
             throw error;
         }
-        removeImage(cultureheritage.image);
-        return Cultureheritage.findByIdAndRemove(CultureheritageId);
-    })
-    .then(result => {
         res.status(200).json({
-            message: "Hapus data cagar budaya berhasil",
+            message: "List data jenis cagar budaya Success dipanggil",
             data: result
-        });
+        })
+    })
+    .catch(err => {
+        next(err);
+    })
+}
+
+exports.getListOfProvinsiOfCulturalHeritage = (req, res, next) => {
+    Cultureheritage.distinct('provinsi')
+    .then(result => {
+        if (!result) {
+            const error = new Error('List data provinsi cagar budaya tidak ditemukan');
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({
+            message: "List data provinsi cagar budaya Success dipanggil",
+            data: result
+        })
     })
     .catch(err => {
         next(err);

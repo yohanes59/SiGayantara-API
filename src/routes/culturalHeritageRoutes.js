@@ -21,4 +21,11 @@ router.get('/culturalheritage/:culturalheritageId', culturalHeritageController.g
 router.put('/culturalheritage/:culturalheritageId', culturalHeritageValidation, culturalHeritageController.updateCulturalHeritage);
 
 router.delete('/culturalheritage/:culturalheritageId', culturalHeritageController.deleteCulturalHeritage);
+
+router.get('/getListOfJenis', culturalHeritageController.getListOfJenisOfCulturalHeritage);
+
+router.get('/getListOfProvinsi', culturalHeritageController.getListOfProvinsiOfCulturalHeritage);
+
+// find by jenis, find by provinsi
+
 module.exports = router;
