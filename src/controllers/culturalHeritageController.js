@@ -161,34 +161,62 @@ exports.deleteCulturalHeritage = (req, res, next) => {
 
 exports.getListOfJenisOfCulturalHeritage = (req, res, next) => {
     Cultureheritage.distinct('jenis')
-    .then(result => {
-        if (!result) {
-            const error = new Error('List data jenis cagar budaya tidak ditemukan');
-            error.statusCode = 404;
-            throw error;
-        }
-        res.status(200).json({
-            message: "List data jenis cagar budaya Success dipanggil",
-            data: result
+        .then(result => {
+            if (!result) {
+                const error = new Error('List data jenis cagar budaya tidak ditemukan');
+                error.statusCode = 404;
+                throw error;
+            }
+            res.status(200).json({
+                message: "List data jenis cagar budaya Success dipanggil",
+                data: result
+            })
         })
+        .catch(err => {
+            next(err);
+        })
+}
+
+exports.getListOfProvinsiOfCulturalHeritage = (req, res, next) => {
+    Cultureheritage.distinct('provinsi')
+        .then(result => {
+            if (!result) {
+                const error = new Error('List data provinsi cagar budaya tidak ditemukan');
+                error.statusCode = 404;
+                throw error;
+            }
+            res.status(200).json({
+                message: "List data provinsi cagar budaya Success dipanggil",
+                data: result
+            })
+        })
+        .catch(err => {
+            next(err);
+        })
+}
+
+exports.getCulturalHeritageByJenis = (req, res, next) => {
+    const Jenis = req.params.jenis;
+    Cultureheritage.find({ jenis: Jenis })
+    .then(result => {
+        res.status(200).json({
+            message: `Berhasil mendapatkan semua data cagar budaya jenis ${Jenis}.`,
+            data: result
+        });
     })
     .catch(err => {
         next(err);
     })
 }
 
-exports.getListOfProvinsiOfCulturalHeritage = (req, res, next) => {
-    Cultureheritage.distinct('provinsi')
+exports.getCulturalHeritageByProvinsi = (req, res, next) => {
+    const Provinsi = req.params.provinsi;
+    Cultureheritage.find({ provinsi: Provinsi })
     .then(result => {
-        if (!result) {
-            const error = new Error('List data provinsi cagar budaya tidak ditemukan');
-            error.statusCode = 404;
-            throw error;
-        }
         res.status(200).json({
-            message: "List data provinsi cagar budaya Success dipanggil",
+            message: `Berhasil mendapatkan semua data cagar budaya Provinsi ${Provinsi}.`,
             data: result
-        })
+        });
     })
     .catch(err => {
         next(err);
