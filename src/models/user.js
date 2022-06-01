@@ -5,6 +5,8 @@ const User = new Schema({
     email: {
         type: String,
         required: true,
+        index: true,
+        unique: true,
     },
     fullName: {
         type: String,
@@ -16,6 +18,6 @@ const User = new Schema({
     }
 }, {
     timestamps: true,
-})
+});
 
 module.exports = mongoose.model('User', User);

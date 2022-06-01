@@ -1,6 +1,7 @@
 const express = require('express');
 const culturalHeritageController = require('../controllers/culturalHeritageController');
 const { body } = require('express-validator');
+const verifyToken = require('../middleware/verifyToken');
 
 const router = express.Router();
 
@@ -11,22 +12,16 @@ const culturalHeritageValidation = [
     body('kabupaten').notEmpty().withMessage('Kabupaten is required'),
 ];
 
-// http://localhost:4000/v1/culturalheritage => post data cagar
-router.post('/culturalheritage', culturalHeritageValidation, culturalHeritageController.createCulturalHeritage);
-// http://localhost:4000/v1/culturalheritages => get all data cagar
-router.get('/culturalheritages', culturalHeritageController.getAllCulturalHeritage);
-// http://localhost:4000/v1/culturalheritage/<id> => get by id data cagar
-router.get('/culturalheritage/:culturalheritageId', culturalHeritageController.getCulturalHeritageById);
-// http://localhost:4000/v1/culturalheritage/<id> => update data cagar
-router.put('/culturalheritage/:culturalheritageId', culturalHeritageValidation, culturalHeritageController.updateCulturalHeritage);
-
-router.delete('/culturalheritage/:culturalheritageId', culturalHeritageController.deleteCulturalHeritage);
-
-router.get('/getListOfJenis/', culturalHeritageController.getListOfJenisOfCulturalHeritage);
-
-router.get('/getListOfProvinsi', culturalHeritageController.getListOfProvinsiOfCulturalHeritage);
-
-router.get('/culturalheritage/jenis/:jenis', culturalHeritageController.getCulturalHeritageByJenis);
-router.get('/culturalheritage/provinsi/:provinsi', culturalHeritageController.getCulturalHeritageByProvinsi);
+// base url: /v1/cultural-heritage
+// get imageById : /images/(<id-nama.format file> ex : 1653456868824-museum wayang.jpg)
+router.post('/', [ culturalHeritageValidation, verifyToken ], culturalHeritageController.createCulturalHeritage); 
+router.patch('/:culturalheritageId', [ culturalHeritageValidation, verifyToken ], culturalHeritageController.updateCulturalHeritage);
+router.delete('/:culturalheritageId', verifyToken, culturalHeritageController.deleteCulturalHeritage); //
+router.get('/', culturalHeritageController.getAllCulturalHeritage); //
+router.get('/:culturalheritageId', culturalHeritageController.getCulturalHeritageById); //
+router.get('/jenis/getList', culturalHeritageController.getListOfJenisOfCulturalHeritage); //
+router.get('/provinsi/getList', culturalHeritageController.getListOfProvinsiOfCulturalHeritage); //
+router.get('/jenis/:jenis', culturalHeritageController.getCulturalHeritageByJenis); //
+router.get('/provinsi/:provinsi', culturalHeritageController.getCulturalHeritageByProvinsi); //
 
 module.exports = router;

@@ -16,7 +16,7 @@ const register = async (req, res, next) => {
             })
         }
 
-        const { email, fullName, password } = req.body;
+        const { fullName, email, password } = req.body;
         const userAlready = await User.findOne({ email });
         if (userAlready) {
             return res.status(409).json({
@@ -29,8 +29,8 @@ const register = async (req, res, next) => {
         const hashPassword = await bcrypt.hash(password, salt);
 
         const user = new User({
-            email,
             fullName,
+            email,
             hash: hashPassword,
         });
 
@@ -43,16 +43,16 @@ const register = async (req, res, next) => {
                 });
             })
             .catch(error => {
-                res.status(500).json({
+                res.status(400).json({
                     status: res.statusCode,
-                    message: 'Failed to create account, All fields are required.'
+                    message: 'All fields are required.'
                 })
             })
     } catch (error) {
         console.log(error);
         return res.status(500).json({
             status: res.statusCode,
-            message: 'You failed to create an account, please try again.'
+            message: 'failed to create an account'
         })
     }
 }
@@ -68,50 +68,58 @@ const login = async (req, res, next) => {
         }
         const { email, password } = req.body;
         await User.findOne({ email })
-        .then(async(result) => {
-            const user = result;
+            .then(async (result) => {
+                const user = result;
 
-            if (!user) {
-                return res.status(400).json({
-                    status: res.statusCode,
-                    message: 'User not found.',
+                if (!user) {
+                    return res.status(400).json({
+                        status: res.statusCode,
+                        message: 'Email not found.',
+                    });
+                }
+
+                const passwordMatch = await bcrypt.compare(password, user.hash);
+                if (!passwordMatch) {
+                    return res.status(401).json({
+                        status: res.statusCode,
+                        message: 'Password is incorrect.',
+                    });
+                }
+
+                const token = jwt.sign({
+                    id: user._id,
+                    email: user.email,
+                }, process.env.SECRET_KEY, {
+                    expiresIn: '12h'
                 });
-            }
 
-            const passwordMatch = await bcrypt.compare(password, user.hash);
-            if (!passwordMatch) {
-                return res.status(401).json({
-                    status: res.statusCode,
-                    message: 'Password is incorrect.',
+                if (process.env.NODE_ENV === 'development') {
+                    res.setHeader('Set-Cookie', [`jwt=${token};  Path=/;HttpOnly; maxAge=86400000;SameSite=false;`]);
+                } else {
+                    res.setHeader('Set-Cookie', [`jwt=${token};  Path=/;HttpOnly; maxAge=86400000;SameSite=None;Secure=true;`]);
+                }
+
+                // res.cookie('jwt', token, {
+                //     httpOnly: true,
+                //     maxAge: 24 * 60 * 60 * 1000,
+                // });
+
+                return res.send({
+                    token,
+                    message: 'login success',
                 });
-            }
-
-            const token = jwt.sign({ 
-                id: user.id,
-                email: user.email 
-            }, process.env.SECRET_KEY, {
-                expiresIn: '1h' 
             });
-
-            res.cookie('jwt', token, {
-                httpOnly: true,
-                maxAge: 24 * 60 * 60 * 1000,
-            });
-
-            return res.send({
-                message: 'login success',
-            });
-        });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({
-            message: 'login failed, please try again.'
+            message: 'login failed',
+            error,
         });
     }
 }
 
 const logout = async (req, res, next) => {
-    res.cookie('jwt', '', { maxAge: 0 })
+    const token = '';
+    res.setHeader('Set-Cookie', [`jwt=${token};  Path=/;HttpOnly; maxAge=0;SameSite=None;Secure=true;`]);
 
     res.send({
         message: 'logout success'

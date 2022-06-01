@@ -3,11 +3,14 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const dotenv = require('dotenv');
 
 const culturalHeritageRoutes = require('./src/routes/culturalHeritageRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 
-const port = 4000;
+dotenv.config();
+const port = process.env.PORT || 5000;
 const app = express();
 
 const fileStorage = multer.diskStorage({
@@ -20,31 +23,27 @@ const fileStorage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-    if(
-        file.mimetype === 'image/png' || 
-        file.mimetype === 'image/jpg' || 
+    if (
+        file.mimetype === 'image/png' ||
+        file.mimetype === 'image/jpg' ||
         file.mimetype === 'image/jpeg'
     ) {
         cb(null, true);
-    } else {
-        cb(null, false);
     }
+    cb("Error: File yang anda kirim tidak valid");
 }
 
+app.use(cookieParser());
+app.use(cors({
+    credentials: true,
+    origin: ['https://sigayantara-api.herokuapp.com']
+}));
 app.use(express.json());
-app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
-
-// app.use((req, res, next) => {
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//     next();
-// });
-app.use(cors());
-
-app.use('/v1', culturalHeritageRoutes);
-app.use('/v1', authRoutes);
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/v1/cultural-heritage', culturalHeritageRoutes);
+app.use('/v1/auth', authRoutes);
 
 app.use((error, req, res, next) => {
     res.status(error.status).json({
@@ -58,7 +57,7 @@ mongoose.connect('mongodb+srv://yohanes:sigayantara@cultureheritage.3mmry.mongod
     useUnifiedTopology: true,
     useCreateIndex: true,
 })
-.then(() => {
-    app.listen(port, () => console.log('Connection Success'));
-})
-.catch(err => console.log(err));
+    .then(() => {
+        app.listen(port, () => console.log(`Connection Success at http://localhost:${port}`));
+    })
+    .catch(err => console.log(err));
