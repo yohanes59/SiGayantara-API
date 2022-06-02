@@ -36,7 +36,7 @@ const fileFilter = (req, file, cb) => {
 app.use(cookieParser());
 app.use(cors({
     credentials: true,
-    origin: ['https://sigayantara-api.herokuapp.com']
+    origin: ['https://sigayantara-api.herokuapp.com', 'http://localhost:3000']
 }));
 app.use(express.json());
 
