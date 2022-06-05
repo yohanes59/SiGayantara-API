@@ -8,7 +8,7 @@ const CulturalheritagePost = new Schema({
     },
     image: {
         type: String,
-        required: true,
+        required: false,
     },
     jenis: {
         type: String,

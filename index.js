@@ -23,14 +23,12 @@ const fileStorage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-    if (
-        file.mimetype === 'image/png' ||
-        file.mimetype === 'image/jpg' ||
-        file.mimetype === 'image/jpeg'
-    ) {
+    const fileTypes = /jpeg|jpg|png/;
+    const mimetype = fileTypes.test(file.mimetype);
+    if (mimetype) {
         cb(null, true);
     }
-    cb("Error: File yang anda kirim tidak valid");
+    cb(null, false);
 }
 
 app.use(cookieParser());
@@ -38,10 +36,11 @@ app.use(cors({
     credentials: true,
     origin: ['https://sigayantara-api.herokuapp.com', 'http://localhost:3000']
 }));
+
 app.use(express.json());
 
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/v1/images', express.static(path.join(__dirname, 'images')));
 app.use('/v1/cultural-heritage', culturalHeritageRoutes);
 app.use('/v1/auth', authRoutes);
 

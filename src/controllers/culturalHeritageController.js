@@ -32,7 +32,7 @@ const _dataNotFoundError = () => {
     throw error;
 }
 
-const createCulturalHeritage = (req, res, next) => {
+const createCulturalHeritage = async (req, res, next) => {
     _inputValidator(req);
 
     const body = req.body;
@@ -48,28 +48,30 @@ const createCulturalHeritage = (req, res, next) => {
         description: body.description,
         author: {
             user_id: body.user_id,
-            name: body.user_fullname,
+            user_fullName: body.user_fullName,
         },
     });
 
-    cultureheritage.save()
-        .then((result) => {
-            res.status(201).json({
-                message: "Data cagar budaya berhasil ditambahkan",
-                data: result,
-            });
-        })
-        .catch((err) => {
-            res.status(400).json({
-                status: res.statusCode,
-                message: 'Semua kolom wajib diisi.'
+    try {
+        await cultureheritage.save()
+            .then((result) => {
+                console.log(result);
+                res.status(201).json({
+                    message: "Data cagar budaya berhasil ditambahkan",
+                    data: result
+                });
             })
-        });
+    } catch (error) {
+        res.status(400).json({
+            status: res.statusCode,
+            message: 'Semua kolom wajib diisi.'
+        })
+    }
 }
 
 const getAllCulturalHeritage = (req, res, next) => {
     const currentPage = +req.query.page || 1;
-    const perPage = +req.query.perPage || 6;
+    const perPage = +req.query.perPage || 9;
     let totalItems;
 
     Cultureheritage.find()
