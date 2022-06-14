@@ -4,12 +4,11 @@ const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const dotenv = require('dotenv');
+require('dotenv').config();
 
 const culturalHeritageRoutes = require('./src/routes/culturalHeritageRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 
-dotenv.config();
 const port = process.env.PORT || 5000;
 const app = express();
 
@@ -34,7 +33,7 @@ const fileFilter = (req, file, cb) => {
 app.use(cookieParser());
 app.use(cors({
     credentials: true,
-    origin: ['https://sigayantara-api.herokuapp.com', 'http://localhost:3000']
+    origin: ['https://sigayantara.netlify.app', 'https://sigayantara-api.herokuapp.com']
 }));
 
 app.use(express.json());
