@@ -39,7 +39,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
-app.use('/v1/images', express.static(path.join(__dirname, 'images')));
+app.use('/v1/images', express.static(path.resolve(__dirname, 'images')));
 app.use('/v1/cultural-heritage', culturalHeritageRoutes);
 app.use('/v1/auth', authRoutes);
 
