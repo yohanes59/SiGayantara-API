@@ -10,6 +10,10 @@ const CulturalheritagePost = new Schema({
         type: String,
         required: false,
     },
+    cloudinary_id: {
+        type: String,
+        required: false,
+    },
     jenis: {
         type: String,
         required: true,

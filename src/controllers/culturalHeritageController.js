@@ -1,8 +1,16 @@
 // referensi data di ambil dari http://cagarbudaya.kemdikbud.go.id/
 const { validationResult } = require('express-validator');
 const path = require('path');
-const fs = require('fs');
+// const fs = require('fs');
 const Cultureheritage = require('../models/culturalHeritage');
+const cloudinary = require('cloudinary').v2;
+const CONFIG = require('../config/config');
+
+cloudinary.config({
+    cloud_name: CONFIG.CLOUDINARY_NAME,
+    api_key: CONFIG.CLOUDINARY_API_KEY,
+    api_secret: CONFIG.CLOUDINARY_API_SECRET,
+});
 
 const _inputValidator = (req) => {
     const errors = validationResult(req);
@@ -16,16 +24,6 @@ const _inputValidator = (req) => {
     }
 }
 
-const _removeImage = (filePath) => {
-    console.log('filePath: ', filePath);
-    console.log('dir name: ', __dirname);
-
-    filePath = path.join(__dirname, '../..', filePath);
-    fs.unlink(filePath, err => {
-        console.log(err);
-    });
-}
-
 const _dataNotFoundError = () => {
     const error = new Error('Data cagar budaya tidak ditemukan');
     error.statusCode = 404;
@@ -36,11 +34,12 @@ const createCulturalHeritage = async (req, res, next) => {
     _inputValidator(req);
 
     const body = req.body;
-    const image = req.file.path;
+    const image = await cloudinary.uploader.upload(req.file.path);
 
     const cultureheritage = new Cultureheritage({
         nama: body.nama,
-        image: image,
+        image: image.secure_url,
+        cloudinary_id: image.public_id,
         jenis: body.jenis,
         provinsi: body.provinsi,
         kabupaten: body.kabupaten,
@@ -122,7 +121,7 @@ const updateCulturalHeritage = (req, res, next) => {
     const body = req.body;
     let image;
     if (req.file != undefined) {
-        image = req.file.path;
+        image = cloudinary.uploader.upload(req.file.path);
     }
 
     const CultureheritageId = req.params.culturalheritageId;
@@ -132,8 +131,9 @@ const updateCulturalHeritage = (req, res, next) => {
                 _dataNotFoundError();
             }
             if (!!image) {
-                _removeImage(cultureheritage.image);
-                cultureheritage.image = image;
+                cloudinary.uploader.destroy(cultureheritage.cloudinary_id);
+                cultureheritage.image = image.secure_url;
+                cultureheritage.cloudinary_id = image.public_id;
             }
             if (!!body.nama) {
                 cultureheritage.nama = body.nama;
@@ -173,7 +173,7 @@ const deleteCulturalHeritage = (req, res, next) => {
             if (!cultureheritage) {
                 _dataNotFoundError();
             }
-            _removeImage(cultureheritage.image);
+            cloudinary.uploader.destroy(cultureheritage.cloudinary_id);
             return Cultureheritage.findByIdAndRemove(CultureheritageId);
         })
         .then(result => {
@@ -187,78 +187,10 @@ const deleteCulturalHeritage = (req, res, next) => {
         })
 }
 
-const getListOfJenisOfCulturalHeritage = (req, res, next) => {
-    Cultureheritage.distinct('jenis')
-        .then(result => {
-            if (!result) {
-                const error = new Error('List data jenis cagar budaya tidak ditemukan');
-                error.statusCode = 404;
-                throw error;
-            }
-            res.status(200).json({
-                message: "List data jenis cagar budaya Success dipanggil",
-                data: result
-            })
-        })
-        .catch(err => {
-            next(err);
-        })
-}
-
-const getListOfProvinsiOfCulturalHeritage = (req, res, next) => {
-    Cultureheritage.distinct('provinsi')
-        .then(result => {
-            if (!result) {
-                const error = new Error('List data provinsi cagar budaya tidak ditemukan');
-                error.statusCode = 404;
-                throw error;
-            }
-            res.status(200).json({
-                message: "List data provinsi cagar budaya Success dipanggil",
-                data: result
-            })
-        })
-        .catch(err => {
-            next(err);
-        })
-}
-
-const getCulturalHeritageByJenis = (req, res, next) => {
-    const Jenis = req.params.jenis;
-    Cultureheritage.find({ jenis: Jenis })
-        .then(result => {
-            res.status(200).json({
-                message: `Berhasil mendapatkan semua data cagar budaya jenis ${Jenis}.`,
-                data: result
-            });
-        })
-        .catch(err => {
-            next(err);
-        })
-}
-
-const getCulturalHeritageByProvinsi = (req, res, next) => {
-    const Provinsi = req.params.provinsi;
-    Cultureheritage.find({ provinsi: Provinsi })
-        .then(result => {
-            res.status(200).json({
-                message: `Berhasil mendapatkan semua data cagar budaya Provinsi ${Provinsi}.`,
-                data: result
-            });
-        })
-        .catch(err => {
-            next(err);
-        })
-}
-
 module.exports = {
     createCulturalHeritage,
     getAllCulturalHeritage,
     getCulturalHeritageById,
     updateCulturalHeritage,
     deleteCulturalHeritage,
-    getListOfJenisOfCulturalHeritage,
-    getListOfProvinsiOfCulturalHeritage,
-    getCulturalHeritageByJenis,
-    getCulturalHeritageByProvinsi
 }

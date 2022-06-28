@@ -12,22 +12,15 @@ require('./src/db/mongoose');
 dotenv.config();
 const app = express();
 
-const fileStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './images');
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${new Date().getTime()}-${file.originalname}`);
-    }
-})
+const fileStorage = multer.diskStorage({})
 
 const fileFilter = (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png/;
-    const mimetype = fileTypes.test(file.mimetype);
-    if (mimetype) {
-        cb(null, true);
+    let ext = path.extname(file.originalname);
+    if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
+        cb(new Error("File type is not supported"), false);
+        return;
     }
-    cb(null, false);
+    cb(null, true);
 }
 
 app.use(cookieParser());
