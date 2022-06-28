@@ -119,21 +119,12 @@ const updateCulturalHeritage = (req, res, next) => {
     _inputValidator(req);
 
     const body = req.body;
-    let image;
-    if (req.file != undefined) {
-        image = cloudinary.uploader.upload(req.file.path);
-    }
 
     const CultureheritageId = req.params.culturalheritageId;
     Cultureheritage.findById(CultureheritageId)
         .then(cultureheritage => {
             if (!cultureheritage) {
                 _dataNotFoundError();
-            }
-            if (!!image) {
-                cloudinary.uploader.destroy(cultureheritage.cloudinary_id);
-                cultureheritage.image = image.secure_url;
-                cultureheritage.cloudinary_id = image.public_id;
             }
             if (!!body.nama) {
                 cultureheritage.nama = body.nama;
