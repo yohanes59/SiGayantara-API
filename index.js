@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
@@ -8,6 +7,7 @@ const dotenv = require('dotenv');
 
 const culturalHeritageRoutes = require('./src/routes/culturalHeritageRoutes');
 const authRoutes = require('./src/routes/authRoutes');
+require('./src/db/mongoose');
 
 dotenv.config();
 const port = process.env.PORT || 5000;
@@ -51,12 +51,4 @@ app.use((error, req, res, next) => {
     });
 });
 
-mongoose.connect('mongodb+srv://yohanes:sigayantara@cultureheritage.3mmry.mongodb.net/cultureHeritageDb?retryWrites=true&w=majority', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-})
-    .then(() => {
-        app.listen(port, () => console.log(`Connection Success at http://localhost:${port}`));
-    })
-    .catch(err => console.log(err));
+app.listen(port, () => console.log(`Connection Success at http://localhost:${port}`));
