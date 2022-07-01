@@ -1,7 +1,6 @@
 // referensi data di ambil dari http://cagarbudaya.kemdikbud.go.id/
 const { validationResult } = require('express-validator');
 const path = require('path');
-// const fs = require('fs');
 const Cultureheritage = require('../models/culturalHeritage');
 const cloudinary = require('cloudinary').v2;
 const CONFIG = require('../config/config');
