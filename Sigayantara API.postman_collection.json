@@ -1,0 +1,345 @@
+{
+	"info": {
+		"_postman_id": "442c3a4f-7fd8-4203-b39c-f9a63d0d284f",
+		"name": "Sigayantara API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19883299"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullName",
+									"value": "bejo gunawan",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "bejo@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "bejo123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "bejo@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "bejo123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/user",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cagar",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/cultural-heritage",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"cultural-heritage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/cultural-heritage/62bcb69a774ed7002351d56c",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"cultural-heritage",
+								"62bcb69a774ed7002351d56c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nama",
+									"value": "Monumen Nasional",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/D:/Yohanes Cahyadi/monas.jpg"
+								},
+								{
+									"key": "jenis",
+									"value": "Kawasan",
+									"type": "text"
+								},
+								{
+									"key": "provinsi",
+									"value": "Jakarta",
+									"type": "text"
+								},
+								{
+									"key": "kabupaten",
+									"value": "Kota Jakarta Pusat",
+									"type": "text"
+								},
+								{
+									"key": "sejarah",
+									"value": "Sejarah ini berawal dari gagasan untuk mendirikan Monas sudah ada sejak 1954. Beberapa hari setelah peringatan proklamasi kemerdekaan Indonesia ke-9, dibentuk Panitia Tugu Nasional yang bertugas untuk mengupayakan berdirinya Tugu Monas. Panitia ini diketuai oleh Sarwoko Martokusumo, dengan dibantu oleh S Suhud sebagai penulis, Sumali Prawirosudirdjo sebagai bendahara, dan empat anggota lainnya, yaitu Supeno, KK Wiloto, EF Wenas, dan Sudiro. Panitia Tugu Nasional bertanggung jawab untuk mempersiapkan segala hal yang dibutuhkan guna membangun Tugu Monas sekaligus mengumpulkan biaya pembangunannya.",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Monumen Nasional atau yang disingkat dengan Monas atau Tugu Monas adalah monumen peringatan setinggi 132 meter (433 kaki) yang terletak tepat di tengah Lapangan Medan Merdeka, Jakarta Pusat. Monas didirikan untuk mengenang perlawanan dan perjuangan rakyat Indonesia dalam merebut kemerdekaan dari pemerintahan kolonial Hindia Belanda.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/cultural-heritage",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"cultural-heritage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nama",
+									"value": "Monumen Nasional",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/D:/Yohanes Cahyadi/monas.jpg"
+								},
+								{
+									"key": "jenis",
+									"value": "Kawasan",
+									"type": "text"
+								},
+								{
+									"key": "provinsi",
+									"value": "Jakarta",
+									"type": "text"
+								},
+								{
+									"key": "kabupaten",
+									"value": "Kota Jakarta Pusat",
+									"type": "text"
+								},
+								{
+									"key": "sejarah",
+									"value": "Sejarah ini berawal dari gagasan untuk mendirikan Monas sudah ada sejak 1954. Beberapa hari setelah peringatan proklamasi kemerdekaan Indonesia ke-9, dibentuk Panitia Tugu Nasional yang bertugas untuk mengupayakan berdirinya Tugu Monas. Panitia ini diketuai oleh Sarwoko Martokusumo, dengan dibantu oleh S Suhud sebagai penulis, Sumali Prawirosudirdjo sebagai bendahara, dan empat anggota lainnya, yaitu Supeno, KK Wiloto, EF Wenas, dan Sudiro. Panitia Tugu Nasional bertanggung jawab untuk mempersiapkan segala hal yang dibutuhkan guna membangun Tugu Monas sekaligus mengumpulkan biaya pembangunannya.",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Monumen Nasional atau yang disingkat dengan Monas atau Tugu Monas adalah monumen peringatan setinggi 132 meter (433 kaki) yang terletak tepat di tengah Lapangan Medan Merdeka, Jakarta Pusat. Monas didirikan untuk mengenang perlawanan dan perjuangan rakyat Indonesia dalam merebut kemerdekaan dari pemerintahan kolonial Hindia Belanda.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/cultural-heritage/64f656ec828e0d4788a1ef77",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"cultural-heritage",
+								"64f656ec828e0d4788a1ef77"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/cultural-heritage/64f65302828e0d4788a1ef76",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"cultural-heritage",
+								"64f65302828e0d4788a1ef76"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -114,46 +114,59 @@ const getCulturalHeritageById = (req, res, next) => {
         });
 }
 
-const updateCulturalHeritage = (req, res, next) => {
-    _inputValidator(req);
+const updateCulturalHeritage = async (req, res, next) => {
+    try {
+        _inputValidator(req);
 
-    const body = req.body;
+        const body = req.body;
+        const CultureheritageId = req.params.culturalheritageId;
+        const cultureheritage = await Cultureheritage.findById(CultureheritageId);
 
-    const CultureheritageId = req.params.culturalheritageId;
-    Cultureheritage.findById(CultureheritageId)
-        .then(cultureheritage => {
-            if (!cultureheritage) {
-                _dataNotFoundError();
+        if (!cultureheritage) {
+            _dataNotFoundError();
+        }
+
+        if (!!body.nama) {
+            cultureheritage.nama = body.nama;
+        }
+        if (!!body.jenis) {
+            cultureheritage.jenis = body.jenis;
+        }
+        if (!!body.provinsi) {
+            cultureheritage.provinsi = body.provinsi;
+        }
+        if (!!body.kabupaten) {
+            cultureheritage.kabupaten = body.kabupaten;
+        }
+        if (!!body.sejarah) {
+            cultureheritage.sejarah = body.sejarah;
+        }
+        if (!!body.description) {
+            cultureheritage.description = body.description;
+        }
+
+        // Jika ada file gambar yang diunggah, upload ke Cloudinary
+        if (req.file) {
+            const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path);
+
+            // Hapus gambar lama dari Cloudinary jika ada
+            if (cultureheritage.cloudinary_id) {
+                await cloudinary.uploader.destroy(cultureheritage.cloudinary_id);
             }
-            if (!!body.nama) {
-                cultureheritage.nama = body.nama;
-            }
-            if (!!body.jenis) {
-                cultureheritage.jenis = body.jenis;
-            }
-            if (!!body.provinsi) {
-                cultureheritage.provinsi = body.provinsi;
-            }
-            if (!!body.kabupaten) {
-                cultureheritage.kabupaten = body.kabupaten;
-            }
-            if (!!body.sejarah) {
-                cultureheritage.sejarah = body.sejarah;
-            }
-            if (!!body.description) {
-                cultureheritage.description = body.description;
-            }
-            return cultureheritage.save();
-        })
-        .then(result => {
-            res.status(200).json({
-                message: "Data cagar budaya berhasil diupdate",
-                data: result,
-            });
-        })
-        .catch(err => {
-            next(err);
+
+            // Simpan URL gambar baru dan public_id dari Cloudinary
+            cultureheritage.image = cloudinaryResponse.secure_url;
+            cultureheritage.cloudinary_id = cloudinaryResponse.public_id;
+        }
+
+        const result = await cultureheritage.save();
+        res.status(200).json({
+            message: "Data cagar budaya berhasil diupdate",
+            data: result,
         });
+    } catch (err) {
+        next(err);
+    }
 }
 
 const deleteCulturalHeritage = (req, res, next) => {
