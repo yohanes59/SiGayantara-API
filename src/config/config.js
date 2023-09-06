@@ -8,6 +8,7 @@ const CONFIG = {
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     BE_URL: process.env.BE_URL,
+    FE_URL: process.env.FE_URL,
 };
 
 module.exports = CONFIG;

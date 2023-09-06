@@ -27,7 +27,7 @@ const fileFilter = (req, file, cb) => {
 app.use(cookieParser());
 app.use(cors({
     credentials: true,
-    origin: [CONFIG.BE_URL, 'http://localhost:3000']
+    origin: [CONFIG.FE_URL, CONFIG.BE_URL, 'http://localhost:3000']
 }));
 
 app.use(express.json());
